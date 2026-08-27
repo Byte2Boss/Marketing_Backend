@@ -2,6 +2,7 @@ from app.models.lead import Lead, DemoBooking
 from app.models.roi import RoiCalculation
 from app.models.contact import ContactInquiry
 from app.models.newsletter import NewsletterSubscriber
+from app.models.team import TeamMember
 
 __all__ = [
     "Lead",
@@ -9,4 +10,5 @@ __all__ = [
     "RoiCalculation",
     "ContactInquiry",
     "NewsletterSubscriber",
+    "TeamMember",
 ]
