@@ -47,12 +47,17 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
 
 
 async def init_db():
-    """Create all database tables on startup if they do not exist."""
+    """Create all database tables on startup and seed initial marketing content."""
     global engine, AsyncSessionLocal
     try:
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
         logger.info("Database tables initialized successfully.")
+        
+        # Seed content tables
+        from app.services.content_seeder import seed_initial_content
+        async with AsyncSessionLocal() as session:
+            await seed_initial_content(session)
     except Exception as e:
         logger.warning(f"Could not initialize PostgreSQL tables: {e}. Attempting SQLite fallback...")
         engine = create_async_engine(
@@ -68,3 +73,8 @@ async def init_db():
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
         logger.info("Database initialized with fallback SQLite engine.")
+        
+        from app.services.content_seeder import seed_initial_content
+        async with AsyncSessionLocal() as session:
+            await seed_initial_content(session)
+

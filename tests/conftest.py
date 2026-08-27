@@ -23,6 +23,11 @@ def event_loop():
 async def prepare_test_db():
     async with test_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+    
+    from app.services.content_seeder import seed_initial_content
+    async with TestAsyncSession() as session:
+        await seed_initial_content(session)
+
     yield
     async with test_engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
