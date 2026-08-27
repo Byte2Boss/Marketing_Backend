@@ -49,10 +49,12 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
 async def init_db():
     """Create all database tables on startup and seed initial marketing content."""
     global engine, AsyncSessionLocal
+    import app.models  # Ensure all SQLAlchemy models are registered on Base.metadata
+
     try:
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
-        logger.info("Database tables initialized successfully.")
+        logger.info("Database tables initialized successfully in PostgreSQL.")
         
         # Seed content tables
         from app.services.content_seeder import seed_initial_content
